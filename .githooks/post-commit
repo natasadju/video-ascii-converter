@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo "Commit successful!"
+echo "Summary of the last commit:"
+
+git log -1 --pretty=format:"👉 %h %s (%an, %ar)"
+
+echo "Changed files:"
+git diff-tree --no-commit-id --name-only -r HEAD
+
+LOG_FILE=".git_commit_log.txt"
+
+if [ ! -f "$LOG_FILE" ]; then
+    echo "Creating the file $LOG_FILE..."
+    touch "$LOG_FILE"
+fi
+
+echo "$(date '+%Y-%m-%d %H:%M:%S'): $(git log -1 --pretty=format:'%h %s by %an')" >> "$LOG_FILE"
+
+echo "Commit log saved to $LOG_FILE"
