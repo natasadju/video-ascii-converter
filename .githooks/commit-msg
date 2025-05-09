@@ -1,7 +1,7 @@
 #!/bin/bash
 msg=$(cat "$1")
 
-if [[ ! "$msg" =~ ^(Added|Fixed|Updated|Removed): ]]; then
-  echo "Commit message must start with Added:, Fixed:, Updated:, or Removed:"
+if [[ ! "$msg" =~ ^(Added|Fixed|Updated|Removed|Test): ]]; then
+  echo "Commit message must start with Added:, Fixed:, Updated:, or Removed: or Test"
   exit 1
 fi
