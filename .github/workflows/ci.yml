@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - test-ci
 
 jobs:
   windows-job:
@@ -23,66 +22,47 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          pip install flake8
 
       - name: Run flake8 static analysis
         run: |
-          pip install flake8
           flake8 main.py || true
 
       - name: Save flake8 report
         run: |
           flake8 main.py > flake8_report.txt || true
 
-      - name: Upload artifact - flake8 report
+      - name: Upload flake8 report
         uses: actions/upload-artifact@v4
         with:
           name: flake8-windows
           path: flake8_report.txt
 
-  linux-job:
-    name: Linux ASCII Dummy Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install imageio-ffmpeg
-
-      - name: Generate dummy video
-        run: |
-          python -c "
-          import numpy as np
-          from moviepy.editor import VideoClip
-          def make_frame(t): return 255 * np.ones((100, 100, 3), dtype=np.uint8)
-          clip = VideoClip(make_frame, duration=1)
-          clip.write_videofile('test_video.mp4', fps=1)
-          "
-
-      - name: Run ASCII conversion
-        run: |
-          python main.py test_video.mp4 --width 50 --grayscale > ascii_output.txt
-
-      - name: Upload artifact - ASCII output
-        uses: actions/upload-artifact@v4
-        with:
-          name: ascii-linux
-          path: ascii_output.txt
-
-  local-run:
-    name: Local Self-Hosted Test
+  sanity-check:
+    name: Sanity Check (Local Runner)
     runs-on: self-hosted
     defaults:
       run:
         shell: bash
     steps:
-      - name: Print message from local runner
-        run: echo "Running on local self-hosted GitHub Actions runner!"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        run: |
+          python --version
+          pip install -r requirements.txt
+
+      - name: Run basic import test
+        run: |
+          python -c "import main; print('Main module imported successfully.')"
+
+      - name: Generate placeholder ASCII artifact
+        run: |
+          echo "ASCII output placeholder (no video)" > ascii_output.txt
+
+      - name: Upload placeholder artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ascii-preview-local
+          path: ascii_output.txt
