@@ -46,9 +46,9 @@ jobs:
       run:
         shell: bash
     steps:
-    - name: Allow Git safe directory for self-hosted runner
+      - name: Allow Git safe directory for self-hosted runner
         run: |
-          git config --global --add safe.directory "${{ github.workspace }}"
+              git config --global --add safe.directory "${{ github.workspace }}"
 
       - name: Checkout code
         uses: actions/checkout@v4
