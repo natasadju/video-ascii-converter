@@ -5,6 +5,9 @@ import threading
 import pygame
 import os
 
+
+# TESTIRANJE KOMITA
+
 from moviepy import (
     VideoFileClip)
 
