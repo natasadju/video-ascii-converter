@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Running flake8..."
-python -m flake8 main.py
+.venv/Scripts/python.exe -m flake8 main.py
 if [ $? -ne 0 ]; then
     echo "flake8 failed. Commit aborted."
     exit 1
